@@ -14,6 +14,14 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
+  dio: ^5.9.2
+  pretty_dio_logger: ^1.2.0
+  get: ^4.7.3
+  shared_preferences: ^2.5.5
+  email_validator: ^2.0.1
+  iconsax: ^0.0.8
+  toastification: ^3.0.3
+
 
 dev_dependencies:
   flutter_test:
