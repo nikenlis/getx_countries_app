@@ -22,7 +22,7 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       iconTheme: IconThemeData(color: textPrimary, size: kIconSize),
       actionsIconTheme: IconThemeData(color: textPrimary, size: kIconSize),
       titleTextStyle: TextStyle(
