@@ -7,7 +7,7 @@ class DioClient {
   DioClient() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://restcountries.com/v3.",
+        baseUrl: "https://restcountries.com/v3.1",
 
         connectTimeout: const Duration(seconds: 10),
 
