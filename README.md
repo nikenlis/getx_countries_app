@@ -1,17 +1,33 @@
-# getx_countries_app
+# 🌍 Countries App (GetX + MVC)
 
-A new Flutter project.
+A Flutter app that displays countries using REST API with fake login authentication.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
+- Fake Login (SharedPreferences)
+- Auto login session
+- Countries list (Dio API)
+- GetX State Management
+- MVC Architecture
+- Clean UI with Glassmorphism
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 📡 API
+https://restcountries.com/v3.1/all?fields=name,capital,flags
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 📱 Screenshots
+
+### Demo
+![Demo](https://canva.link/n8wu072vrbfhxho)
+
+---
+
+## 🛠️ Tech Stack
+- Flutter
+- GetX
+- Dio
+- SharedPreferences
