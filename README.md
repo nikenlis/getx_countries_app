@@ -22,7 +22,7 @@ https://restcountries.com/v3.1/all?fields=name,capital,flags
 ## 📱 Screenshots
 
 ### Demo
-![Demo](https://canva.link/n8wu072vrbfhxho)
+![Mockup](assets/mockeup.png)
 
 ---
 
