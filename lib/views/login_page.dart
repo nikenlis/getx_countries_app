@@ -1,10 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:getx_countries_app/controllers/auth_controller.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:toastification/toastification.dart';
 
 import '../app/theme/app_color.dart';
 import '../components/form.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,13 +20,50 @@ class _LoginPageState extends State<LoginPage> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  late final AuthController controller;
 
   String? emailError;
   String? passwordError;
   bool rememberMe = false;
 
-  _submitLogin() {
-    
+  void _submitLogin() {
+    FocusScope.of(context).unfocus();
+
+    if (_formKey.currentState!.validate()) {
+      controller.login(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = Get.find<AuthController>();
+
+    ever(controller.errorMessage, (message) {
+      if (message != null) {
+        toastification.show(
+              context: context,
+              type: ToastificationType.error,
+              style: ToastificationStyle.flatColored,
+              title: Text("Registration Failed"),
+              description: Text(message),
+              alignment: Alignment.topLeft,
+              animationBuilder: (context, animation, alignment, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              autoCloseDuration: const Duration(seconds: 3),
+              borderRadius: BorderRadius.circular(16.0),
+              closeButton: ToastCloseButton(showType: CloseButtonShowType.none),
+              dragToClose: true,
+            );
+
+        controller.errorMessage.value = null;
+      }
+    });
   }
 
   @override
@@ -39,137 +78,131 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: neutral,
       body: LayoutBuilder(
-            builder: (context, constraints) => ListView(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/logos/dramaprem-icon.png",
-                          width: 64,
-                          height: 64,
-                          fit: BoxFit.contain,
-                        ),
-                        Text(
-                          "Welcome Back",
-                          style: TextStyle(
-                            color: base,
-                            fontSize: 28,
-                            fontWeight: extraBold,
-                          ),
-                        ),
-                        Text(
-                          "Sign in to continue watching",
-                          style: TextStyle(
-                            color: base,
-                            fontSize: 14,
-                            fontWeight: light,
-                          ),
-                        ),
+        builder: (context, constraints) => ListView(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Welcome Back",
+                      style: TextStyle(
+                        color: base,
+                        fontSize: 28,
+                        fontWeight: extraBold,
+                      ),
+                    ),
+                    Text(
+                      "Sign in to continue accessing the app",
+                      style: TextStyle(
+                        color: base,
+                        fontSize: 14,
+                        fontWeight: light,
+                      ),
+                    ),
 
-                        SizedBox(height: 14),
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              FormItems(
-                                controller: emailController,
-                                textInputAction: TextInputAction.next,
-                                errorText: emailError,
-                                textInputType: TextInputType.emailAddress,
-                                title: "Email",
-                                hintTitle: "your@email.com",
-                                isShowHint: true,
-                                iconPrefix: LucideIcons.mail,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'Email is required';
-                                  }
-                                  if (!EmailValidator.validate(value.trim())) {
-                                    return 'Please enter a valid email address';
-                                  }
-                                  return null;
-                                },
-                                onChanged: (_) {
-                                  if (emailError != null) {
-                                    setState(() {
-                                      emailError = null;
-                                    });
-                                  }
-                                },
-                                onFieldSubmitted: (value) {
-                                  setState(() {
-                                    if (value.trim().isEmpty) {
-                                      emailError = 'Email is required';
-                                    } else if (!EmailValidator.validate(
-                                      value.trim(),
-                                    )) {
-                                      emailError =
-                                          'Please enter a valid email address';
-                                    } else {
-                                      emailError = null;
-                                    }
-                                  });
-                                },
-                              ),
-
-                              SizedBox(height: 14),
-                              FormItems(
-                                controller: passwordController,
-                                textInputAction: TextInputAction.done,
-                                errorText: passwordError,
-                                textInputType: TextInputType.visiblePassword,
-                                title: "Password",
-                                hintTitle: "Enter your password",
-                                isShowHint: true,
-                                obsecureText: true,
-                                iconVisibility: true,
-                                iconPrefix: LucideIcons.lock,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return "Password cannot be empty";
-                                  }
-                                  if (value.trim().length < 8) {
-                                    return "Password must be at least 8 characters";
-                                  }
-                                  return null;
-                                },
-                                onChanged: (_) {
-                                  if (passwordError != null) {
-                                    setState(() {
-                                      passwordError = null;
-                                    });
-                                  }
-                                },
-                                onFieldSubmitted: (value) {
-                                  setState(() {
-                                    if (value.trim().isEmpty) {
-                                      passwordError =
-                                          "Password cannot be empty";
-                                    } else if (value.trim().length < 8) {
-                                      passwordError =
-                                          "Password must be at least 8 characters";
-                                    } else {
-                                      passwordError = null;
-                                    }
-                                  });
-                                },
-                              ),
-                            ],
+                    SizedBox(height: 14),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          FormItems(
+                            controller: emailController,
+                            textInputAction: TextInputAction.next,
+                            errorText: emailError,
+                            textInputType: TextInputType.emailAddress,
+                            title: "Email",
+                            hintTitle: "your@email.com",
+                            isShowHint: true,
+                            iconPrefix: LucideIcons.mail,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!EmailValidator.validate(value.trim())) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                            onChanged: (_) {
+                              if (emailError != null) {
+                                setState(() {
+                                  emailError = null;
+                                });
+                              }
+                            },
+                            onFieldSubmitted: (value) {
+                              setState(() {
+                                if (value.trim().isEmpty) {
+                                  emailError = 'Email is required';
+                                } else if (!EmailValidator.validate(
+                                  value.trim(),
+                                )) {
+                                  emailError =
+                                      'Please enter a valid email address';
+                                } else {
+                                  emailError = null;
+                                }
+                              });
+                            },
                           ),
-                        ),
-                        
 
-                        SizedBox(height: 24),
-                        Container(
+                          SizedBox(height: 14),
+                          FormItems(
+                            controller: passwordController,
+                            textInputAction: TextInputAction.done,
+                            errorText: passwordError,
+                            textInputType: TextInputType.visiblePassword,
+                            title: "Password",
+                            hintTitle: "Enter your password",
+                            isShowHint: true,
+                            obsecureText: true,
+                            iconVisibility: true,
+                            iconPrefix: LucideIcons.lock,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Password cannot be empty";
+                              }
+                              if (value.trim().length < 8) {
+                                return "Password must be at least 8 characters";
+                              }
+                              return null;
+                            },
+                            onChanged: (_) {
+                              if (passwordError != null) {
+                                setState(() {
+                                  passwordError = null;
+                                });
+                              }
+                            },
+                            onFieldSubmitted: (value) {
+                              setState(() {
+                                if (value.trim().isEmpty) {
+                                  passwordError = "Password cannot be empty";
+                                } else if (value.trim().length < 8) {
+                                  passwordError =
+                                      "Password must be at least 8 characters";
+                                } else {
+                                  passwordError = null;
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 24),
+                    controller.obx(
+                      (_) {
+                        return Container(
                           width: double.infinity,
                           height: 48,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               colors: [Color(0xFFA855F7), Color(0xFFEC4899)],
                             ),
                             borderRadius: BorderRadius.circular(16),
@@ -178,61 +211,52 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(16),
-                              // onTap: !isLoading ? () {
-                              //   _submitLogin();
-                              // } : null,
+                              onTap: _submitLogin,
                               child: Center(
                                 child: Text(
-                                        "Sign In",
-                                        style: TextStyle(
-                                          color: base,
-                                          fontSize: 16,
-                                          fontWeight: medium,
-                                        ),
-                                      )
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: textSecondary,
-                                thickness: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: Text(
-                                "or continue with",
-                                style: TextStyle(
-                                  color: textSecondary,
-                                  fontSize: 12,
+                                  "Sign In",
+                                  style: TextStyle(
+                                    color: base,
+                                    fontSize: 16,
+                                    fontWeight: medium,
+                                  ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Divider(
-                                color: textSecondary,
-                                thickness: 1,
-                              ),
-                            ),
-                          ],
+                          ),
+                        );
+                      },
+
+                      onLoading: Container(
+                        width: double.infinity,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFA855F7), Color(0xFFEC4899)],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        SizedBox(height: 16),   
-                        
-                      ],
+                        child: const Center(
+                          child: SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+
+                    SizedBox(height: 16),
+                  ],
                 ),
-              ],
+              ),
             ),
-          )
+          ],
+        ),
+      ),
     );
   }
 }
